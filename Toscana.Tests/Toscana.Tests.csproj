@@ -99,6 +99,7 @@
     <Compile Include="Exceptions\ToscaValidationExceptionTests.cs" />
     <Compile Include="Exceptions\ToscaParsingExceptionTests.cs" />
     <Compile Include="FileContent.cs" />
+    <Compile Include="Fluent\ToscaCSARBuilderTests.cs" />
     <Compile Include="GithubRepositoryTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TempFile.cs" />
