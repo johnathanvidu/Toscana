@@ -176,7 +176,6 @@ namespace Toscana.Fluent
         /// <param name="entryDefinition">The entry definition file name</param>
         private void SetEntryDefinition(string entryDefinition)
         {
-            if (toscaServiceTemplates.All(pair => pair.Key != entryDefinition)) throw new Exception("Entry does not exist");
             toscaMetadata.EntryDefinitions = entryDefinition;
         }
 
