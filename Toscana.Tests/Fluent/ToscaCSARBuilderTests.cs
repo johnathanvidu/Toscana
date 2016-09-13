@@ -1,7 +1,11 @@
 ﻿
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
+using System.Linq;
 using NUnit.Framework;
 using Toscana.Fluent;
 using Toscana.Fluent.Models;
@@ -24,11 +28,7 @@ namespace Toscana.Tests.Fluent
                 builder =>
                     builder
                         .AddMetadata(dto)
-                        .EntryDefinitions("viduchinsky.yml", new ToscaServiceTemplate())
-                        .AddArtifact("vido.txt", new byte[0])
-                        .AddArtifact("vidoDriver.zip", new byte[0])
-                        .AddServiceTemplate("vidoYaml.yml", new ToscaServiceTemplate())
-                        .AddServiceTemplate("vidoYaml2.yml", new ToscaServiceTemplate()));
+                        .EntryDefinitions("vido.yml", new ToscaServiceTemplate()));
             var zipData = constructor.BuildZip();
             var toscaCloudServiceArchive = constructor.BuildCSAR();
             using (var fileStream = File.Create(@"c:\Temp\vido.zip"))

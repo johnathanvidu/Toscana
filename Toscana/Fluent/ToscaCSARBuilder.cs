@@ -152,7 +152,7 @@ namespace Toscana.Fluent
         private static void ValidateCsar(ToscaCloudServiceArchive csar)
         {
             List<ValidationResult> validationResults;
-            if (csar.TryValidate(out validationResults)) throw new Exception(CreateErrorMessageFromValidationResults(validationResults));
+            if (!csar.TryValidate(out validationResults)) throw new Exception(CreateErrorMessageFromValidationResults(validationResults));
         }
 
         private static string CreateErrorMessageFromValidationResults(List<ValidationResult> validationResults)
