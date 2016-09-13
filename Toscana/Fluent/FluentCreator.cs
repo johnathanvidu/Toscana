@@ -3,19 +3,6 @@
 namespace Toscana.Fluent
 {
     /// <summary>
-    /// Represents the fluent syntax of setting entry definition section required by TOSCA.meta file
-    /// </summary>
-    public interface IFluentCSARSetEntryDefinition
-    {
-        /// <summary>
-        /// Sets the entry definition section required by TOSCA.meta file
-        /// </summary>
-        /// <param name="entryDefinition">The entry definition file name</param>
-        /// <returns>Fluent syntax which allows creating new CSAR</returns>
-        IFluentCSARConstruction SetEntryDefinition(string entryDefinition);
-    }
-
-    /// <summary>
     /// Represents the fluent syntax of creating new Tosca Cloud Service Archive
     /// </summary>
     public interface IFluentCSARConstruction
@@ -38,11 +25,11 @@ namespace Toscana.Fluent
     /// </summary>
     public class FluentCSAR
     {
-        private readonly ToscaCSARBuilder csarToscaCsarBuilder;
+        private readonly ToscaCSARBuilder toscaCsarBuilder;
 
         private FluentCSAR()
         {
-            csarToscaCsarBuilder = new ToscaCSARBuilder();
+            toscaCsarBuilder = new ToscaCSARBuilder();
         }
 
         /// <summary>
@@ -50,29 +37,14 @@ namespace Toscana.Fluent
         /// </summary>
         /// <param name="metadataBuilder">TOSCA.meta file builder that is part of the Tosca Cloud Service Archive</param>
         /// <returns>Fluent syntax of creating new Tosca Cloud Service Archive</returns>
-        public static IFluentCSARSetEntryDefinition Config(Action<IToscaCSARMetadataBuilder> metadataBuilder)
+        public static IFluentCSARConstruction Config(Action<IToscaCSARMetadataBuilder> metadataBuilder)
         {
             return new FluentCSAR().InternalConfig(metadataBuilder);
         }
 
-        private IFluentCSARSetEntryDefinition InternalConfig(Action<IToscaCSARMetadataBuilder> metadataBuilder)
+        private IFluentCSARConstruction InternalConfig(Action<IToscaCSARMetadataBuilder> metadataBuilder)
         {
-            metadataBuilder(csarToscaCsarBuilder);
-            return new FluentCsarFluentCsarSetEntryDefinition(csarToscaCsarBuilder);
-        }
-    }
-
-    internal class FluentCsarFluentCsarSetEntryDefinition : IFluentCSARSetEntryDefinition
-    {
-        private readonly ToscaCSARBuilder toscaCsarBuilder;
-
-        public FluentCsarFluentCsarSetEntryDefinition(ToscaCSARBuilder toscaCsarBuilder)
-        {
-            this.toscaCsarBuilder = toscaCsarBuilder;
-        }
-        public IFluentCSARConstruction SetEntryDefinition(string entryDefinition)
-        {
-            toscaCsarBuilder.SetEntryDefinition(entryDefinition);
+            metadataBuilder(toscaCsarBuilder);
             return new FluentCSARConstruction(toscaCsarBuilder);
         }
     }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.Data.Odbc;
 using System.IO;
 using System.Linq;
 using Toscana.Fluent.Models;
@@ -39,10 +40,24 @@ namespace Toscana.Fluent
         /// </summary>
         /// <param name="slimMetadata">The several fields</param>
         /// <returns>The same builder for fluent construction</returns>
-        IToscaCSARBuilder AddMetadata(SlimMetadata slimMetadata);
+        IToscaCSAREntryDefinitionBuilder AddMetadata(SlimMetadata slimMetadata);
     }
 
-    internal class ToscaCSARBuilder : IToscaCSARMetadataBuilder, IToscaCSARBuilder
+    /// <summary>
+    /// Represents the fluent syntax of setting entry definition section required by TOSCA.meta file
+    /// </summary>
+    public interface IToscaCSAREntryDefinitionBuilder
+    {
+        /// <summary>
+        /// Sets the entry definition section required by TOSCA.meta file
+        /// </summary>
+        /// <param name="entryDefinitions">The entry definition file name</param>
+        /// <param name="toscaServiceTemplate">The entry tosca service template matching the entry definition</param>
+        /// <returns>Fluent syntax which allows creating new CSAR</returns>
+        IToscaCSARBuilder EntryDefinitions(string entryDefinitions, ToscaServiceTemplate toscaServiceTemplate);
+    }
+
+    internal class ToscaCSARBuilder : IToscaCSARMetadataBuilder, IToscaCSAREntryDefinitionBuilder, IToscaCSARBuilder
     {
         private readonly ToscaMetadata toscaMetadata;
         private readonly ICollection<KeyValuePair<string, ToscaServiceTemplate>> toscaServiceTemplates;
@@ -60,11 +75,24 @@ namespace Toscana.Fluent
         /// </summary>
         /// <param name="slimMetadata">The several fields</param>
         /// <returns>The same builder for fluent construction</returns>
-        public IToscaCSARBuilder AddMetadata(SlimMetadata slimMetadata)
+        public IToscaCSAREntryDefinitionBuilder AddMetadata(SlimMetadata slimMetadata)
         {
             toscaMetadata.ToscaMetaFileVersion = slimMetadata.ToscaMetaFileVersion;
             toscaMetadata.CsarVersion = slimMetadata.CSARVersion;
             toscaMetadata.CreatedBy = slimMetadata.CreatedBy;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the entry definition section required by TOSCA.meta file
+        /// </summary>
+        /// <param name="entryDefinitions">The entry definition file name</param>
+        /// <param name="toscaServiceTemplate">The entry tosca service template matching the entry definition</param>
+        /// <returns>Fluent syntax which allows creating new CSAR</returns>
+        public IToscaCSARBuilder EntryDefinitions(string entryDefinitions, ToscaServiceTemplate toscaServiceTemplate)
+        {
+            AddServiceTemplate(entryDefinitions, toscaServiceTemplate);
+            SetEntryDefinition(entryDefinitions);
             return this;
         }
 
@@ -93,16 +121,6 @@ namespace Toscana.Fluent
         }
 
         /// <summary>
-        /// Sets the entry definition section required by TOSCA.meta file
-        /// </summary>
-        /// <param name="entryDefinition">The entry definition file name</param>
-        public void SetEntryDefinition(string entryDefinition)
-        {
-            if (toscaServiceTemplates.All(pair => pair.Key != entryDefinition)) throw new Exception("Entry does not exist");
-            toscaMetadata.EntryDefinitions = entryDefinition;
-        }
-
-        /// <summary>
         /// Builds a zip file from collected configuration and saves it in memory
         /// </summary>
         /// <returns>Tosca Cloud Service Archive as a zip file in memory</returns>
@@ -123,12 +141,23 @@ namespace Toscana.Fluent
         /// <returns>Configured Tosca Cloud Service Archive</returns>
         public ToscaCloudServiceArchive BuildCsarPreConfigured()
         {
-            ValidateMetadata();
-
             var csar = new ToscaCloudServiceArchive(toscaMetadata);
             SetServiceTemplates(csar);
             SetArtifacts(csar);
+            // Validate Tosca Cloud Service Archive
+            ValidateCsar(csar);
             return csar;
+        }
+
+        private static void ValidateCsar(ToscaCloudServiceArchive csar)
+        {
+            List<ValidationResult> validationResults;
+            if (csar.TryValidate(out validationResults)) throw new Exception(CreateErrorMessageFromValidationResults(validationResults));
+        }
+
+        private static string CreateErrorMessageFromValidationResults(List<ValidationResult> validationResults)
+        {
+            return string.Join(Environment.NewLine, validationResults.Select(result => result.ErrorMessage));
         }
 
         private void SetArtifacts(ToscaCloudServiceArchive csar)
@@ -141,11 +170,14 @@ namespace Toscana.Fluent
             AddTo(toscaServiceTemplates, csar.AddToscaServiceTemplate);
         }
 
-        private void ValidateMetadata()
+        /// <summary>
+        /// Sets the entry definition section required by TOSCA.meta file
+        /// </summary>
+        /// <param name="entryDefinition">The entry definition file name</param>
+        private void SetEntryDefinition(string entryDefinition)
         {
-            ICollection<ValidationResult> validationResults = new Collection<ValidationResult>();
-            var isValid = new DataAnnotationsValidator.DataAnnotationsValidator().TryValidateObject(toscaMetadata, validationResults);
-            if (!isValid) throw new Exception("Not valid");
+            if (toscaServiceTemplates.All(pair => pair.Key != entryDefinition)) throw new Exception("Entry does not exist");
+            toscaMetadata.EntryDefinitions = entryDefinition;
         }
 
         #region Helper methods
