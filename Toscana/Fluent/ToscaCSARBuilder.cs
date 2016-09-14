@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
-using System.Data.Odbc;
 using System.IO;
 using System.Linq;
+using Toscana.Exceptions;
 using Toscana.Fluent.Models;
 
 namespace Toscana.Fluent
@@ -152,7 +151,9 @@ namespace Toscana.Fluent
         private static void ValidateCsar(ToscaCloudServiceArchive csar)
         {
             List<ValidationResult> validationResults;
-            if (!csar.TryValidate(out validationResults)) throw new Exception(CreateErrorMessageFromValidationResults(validationResults));
+            if (!csar.TryValidate(out validationResults)) throw new ToscaValidationException(CreateErrorMessageFromValidationResults(validationResults));
+            if (string.IsNullOrEmpty(csar.EntryDefinitions)) // May be unnecessary in the future
+                throw new ToscaValidationException("Entry definitions is missing. Please use EntryDefinitions(string, ToscaServiceTemplate) in your fluent syntax.");
         }
 
         private static string CreateErrorMessageFromValidationResults(List<ValidationResult> validationResults)
