@@ -127,7 +127,7 @@
     <Compile Include="Exceptions\ToscaBaseException.cs" />
     <Compile Include="Exceptions\ToscaParsingException.cs" />
     <Compile Include="Fluent\FluentCreator.cs" />
-    <Compile Include="Fluent\Models\SlimMetadata.cs" />
+    <Compile Include="Fluent\Models\SlimToscaMetadata.cs" />
     <Compile Include="Fluent\ToscaCSARBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Engine\ToscaDeserializer.cs" />

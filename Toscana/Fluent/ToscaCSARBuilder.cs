@@ -37,9 +37,9 @@ namespace Toscana.Fluent
         /// <summary>
         /// Adds some metadata required by TOSCA.meta file 
         /// </summary>
-        /// <param name="slimMetadata">The several fields</param>
+        /// <param name="slimToscaMetadata">The several fields</param>
         /// <returns>The same builder for fluent construction</returns>
-        IToscaCSAREntryDefinitionBuilder AddMetadata(SlimMetadata slimMetadata);
+        IToscaCSAREntryDefinitionBuilder AddMetadata(SlimToscaMetadata slimToscaMetadata);
     }
 
     /// <summary>
@@ -72,13 +72,13 @@ namespace Toscana.Fluent
         /// <summary>
         /// Adds some metadata required by TOSCA.meta file 
         /// </summary>
-        /// <param name="slimMetadata">The several fields</param>
+        /// <param name="slimToscaMetadata">The several fields</param>
         /// <returns>The same builder for fluent construction</returns>
-        public IToscaCSAREntryDefinitionBuilder AddMetadata(SlimMetadata slimMetadata)
+        public IToscaCSAREntryDefinitionBuilder AddMetadata(SlimToscaMetadata slimToscaMetadata)
         {
-            toscaMetadata.ToscaMetaFileVersion = slimMetadata.ToscaMetaFileVersion;
-            toscaMetadata.CsarVersion = slimMetadata.CSARVersion;
-            toscaMetadata.CreatedBy = slimMetadata.CreatedBy;
+            toscaMetadata.ToscaMetaFileVersion = slimToscaMetadata.ToscaMetaFileVersion;
+            toscaMetadata.CsarVersion = slimToscaMetadata.CSARVersion;
+            toscaMetadata.CreatedBy = slimToscaMetadata.CreatedBy;
             return this;
         }
 

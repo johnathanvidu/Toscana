@@ -15,7 +15,7 @@ namespace Toscana.Tests.Fluent
         public void CreatingToscaCSARFluently_OnlyPartialMetadata_BuildObjectFailed()
         {
             // Arrange
-            var dto = new SlimMetadata
+            var dto = new SlimToscaMetadata
             {
                 ToscaMetaFileVersion = new Version(1, 0),
                 CSARVersion = new Version(0, 1),
@@ -38,7 +38,7 @@ namespace Toscana.Tests.Fluent
         {
             // Arrange
             const string EntryDefinition = "tosca.yml";
-            var dto = new SlimMetadata
+            var dto = new SlimToscaMetadata
             {
                 ToscaMetaFileVersion = new Version(1, 0),
                 CSARVersion = new Version(0, 1),
@@ -71,7 +71,7 @@ namespace Toscana.Tests.Fluent
             const string EntryDefinition = "tosca.yml";
             const string SomeYmlFileName = "someymlfile.yml";
 
-            var dto = new SlimMetadata
+            var dto = new SlimToscaMetadata
             {
                 ToscaMetaFileVersion = new Version(1, 0),
                 CSARVersion = new Version(0, 1),
@@ -106,7 +106,7 @@ namespace Toscana.Tests.Fluent
             const string SomeYmlFileName = "someymlfile.yml";
             const string SomeArtifactFileName = "artifact.zip";
 
-            var dto = new SlimMetadata
+            var dto = new SlimToscaMetadata
             {
                 ToscaMetaFileVersion = new Version(1, 0),
                 CSARVersion = new Version(0, 1),
@@ -146,7 +146,7 @@ namespace Toscana.Tests.Fluent
             const string SomeYmlFileName = "someymlfile.yml";
             const string SomeArtifactFileName = "artifact.zip";
 
-            var dto = new SlimMetadata
+            var dto = new SlimToscaMetadata
             {
                 ToscaMetaFileVersion = new Version(1, 0),
                 CSARVersion = new Version(0, 1),
@@ -178,7 +178,7 @@ namespace Toscana.Tests.Fluent
             // Arrange
             const string EntryDefinition = "tosca.yml";
 
-            var dto = new SlimMetadata
+            var dto = new SlimToscaMetadata
             {
                 ToscaMetaFileVersion = new Version(1, 0),
                 CSARVersion = new Version(0, 1),
@@ -204,7 +204,7 @@ namespace Toscana.Tests.Fluent
         public void CreatingToscaCSARFluently_NoEntryDefinitions_ThrowsValidationError()
         {
             // Arrange
-            var dto = new SlimMetadata
+            var dto = new SlimToscaMetadata
             {
                 ToscaMetaFileVersion = new Version(1, 0),
                 CSARVersion = new Version(0, 1),
