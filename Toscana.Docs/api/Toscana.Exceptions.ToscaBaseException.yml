@@ -27,7 +27,7 @@ items:
   assemblies:
   - Toscana
   namespace: Toscana.Exceptions
-  summary: "\nBase TOSCA Exception class to be used as a base class in Toscana for all the exceptions\n"
+  summary: "\nGetDerivedFromEntity TOSCA Exception class to be used as a base class in Toscana for all the exceptions\n"
   example: []
   syntax:
     content: >-

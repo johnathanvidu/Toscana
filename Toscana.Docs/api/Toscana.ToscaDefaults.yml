@@ -398,10 +398,10 @@ items:
   summary: "\nReturns an instance of the tosca.datatypes.Root\n"
   example: []
   syntax:
-    content: public static ToscaDataTypeDefinition GetRootDataType()
-    content.vb: Public Shared Function GetRootDataType As ToscaDataTypeDefinition
+    content: public static ToscaDataType GetRootDataType()
+    content.vb: Public Shared Function GetRootDataType As ToscaDataType
     return:
-      type: Toscana.ToscaDataTypeDefinition
+      type: Toscana.ToscaDataType
       description: ''
   modifiers.csharp:
   - public
@@ -729,10 +729,10 @@ references:
   name: ToscaCapabilityType
   nameWithType: ToscaCapabilityType
   fullName: Toscana.ToscaCapabilityType
-- uid: Toscana.ToscaDataTypeDefinition
-  commentId: T:Toscana.ToscaDataTypeDefinition
+- uid: Toscana.ToscaDataType
+  commentId: T:Toscana.ToscaDataType
   parent: Toscana
   isExternal: false
-  name: ToscaDataTypeDefinition
-  nameWithType: ToscaDataTypeDefinition
-  fullName: Toscana.ToscaDataTypeDefinition
+  name: ToscaDataType
+  nameWithType: ToscaDataType
+  fullName: Toscana.ToscaDataType

@@ -40,12 +40,12 @@ namespace Toscana.Tests
         {
             var toscaCapabilityType = new ToscaCapabilityType();
 
-            toscaCapabilityType.SetToscaCloudServiceArchive(new ToscaCloudServiceArchive(new ToscaMetadata()));
+            toscaCapabilityType.SetCloudServiceArchive(new ToscaCloudServiceArchive(new ToscaMetadata()));
             toscaCapabilityType.DerivedFrom = "base";
 
             // Act
             ToscaCapabilityType baseCapabilityType;
-            Action action = () => baseCapabilityType = toscaCapabilityType.Base;
+            Action action = () => baseCapabilityType = toscaCapabilityType.GetDerivedFromEntity();
 
             // Assert
             action.ShouldThrow<ToscaCapabilityTypeNotFoundException>().WithMessage("Capability type 'base' not found");
@@ -78,21 +78,23 @@ namespace Toscana.Tests
         {
             // Arrange
             var derivedCapabilityType = new ToscaCapabilityType { DerivedFrom = "base" };
-            derivedCapabilityType.Properties.Add("speed", new ToscaPropertyDefinition
+            derivedCapabilityType.Properties.Add("speed", new ToscaProperty
             {
                 Type = "string",
                 Required = false,
-                Default = "10MBps"
+                Default = "10MBps",
+                Description = "derived description"
             });
             var baseCapabilityType = new ToscaCapabilityType();
-            baseCapabilityType.Properties.Add("speed", new ToscaPropertyDefinition
+            baseCapabilityType.Properties.Add("speed", new ToscaProperty
             {
-                Type = "integer",
+                Type = "string",
                 Required = true,
-                Default = ""
+                Default = "",
+                Description = "base description"
             });
 
-            var serviceTemplate = new ToscaServiceTemplate() { ToscaDefinitionsVersion = "tosca_simple_yaml_1_0" };
+            var serviceTemplate = new ToscaServiceTemplate { ToscaDefinitionsVersion = "tosca_simple_yaml_1_0" };
             serviceTemplate.CapabilityTypes.Add("base", baseCapabilityType);
             serviceTemplate.CapabilityTypes.Add("derived", derivedCapabilityType);
             var cloudServiceArchive = new ToscaCloudServiceArchive(new ToscaMetadata { CreatedBy = "Anonymous", CsarVersion = new Version(1, 1), EntryDefinitions = "tosca.yaml", ToscaMetaFileVersion = new Version(1, 1) });
@@ -108,6 +110,45 @@ namespace Toscana.Tests
             speedProperty.Type.Should().Be("string");
             speedProperty.Required.Should().BeFalse();
             speedProperty.Default.Should().Be("10MBps");
+            speedProperty.Description.Should().Be("derived description");
+        }
+
+        [Test]
+        public void GetAllProperties_Does_Not_Override_Base_Properties()
+        {
+            // Arrange
+            var derivedCapabilityType = new ToscaCapabilityType { DerivedFrom = "base" };
+            derivedCapabilityType.Properties.Add("speed", new ToscaProperty
+            {
+                Type = "string"
+            });
+            var baseCapabilityType = new ToscaCapabilityType();
+            baseCapabilityType.Properties.Add("speed", new ToscaProperty
+            {
+                Type = "string",
+                Required = true,
+                Default = "base default",
+                Description = "base description"
+            });
+
+            var serviceTemplate = new ToscaServiceTemplate { ToscaDefinitionsVersion = "tosca_simple_yaml_1_0" };
+            serviceTemplate.CapabilityTypes.Add("base", baseCapabilityType);
+            serviceTemplate.CapabilityTypes.Add("derived", derivedCapabilityType);
+            var cloudServiceArchive = new ToscaCloudServiceArchive(new ToscaMetadata { CreatedBy = "Anonymous", CsarVersion = new Version(1, 1), EntryDefinitions = "tosca.yaml", ToscaMetaFileVersion = new Version(1, 1) });
+            cloudServiceArchive.AddToscaServiceTemplate("tosca.yaml", serviceTemplate);
+
+            List<ValidationResult> validationResults;
+            cloudServiceArchive.TryValidate(out validationResults)
+                .Should().BeTrue(string.Join(Environment.NewLine, validationResults.Select(r => r.ErrorMessage)));
+
+            // Act
+            var speedProperty = derivedCapabilityType.GetAllProperties()["speed"];
+
+            // Assert
+            speedProperty.Type.Should().Be("string");
+            speedProperty.Required.Should().BeTrue();
+            speedProperty.Default.Should().Be("base default");
+            speedProperty.Description.Should().Be("base description");
         }
 
         [Test]

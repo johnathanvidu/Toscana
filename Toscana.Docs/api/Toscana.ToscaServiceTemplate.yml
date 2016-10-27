@@ -534,11 +534,11 @@ items:
   summary: "\nDeclares a list of optional TOSCA Data Type definitions.\n"
   example: []
   syntax:
-    content: public Dictionary<string, ToscaDataTypeDefinition> DataTypes { get; set; }
-    content.vb: Public Property DataTypes As Dictionary(Of String, ToscaDataTypeDefinition)
+    content: public Dictionary<string, ToscaDataType> DataTypes { get; set; }
+    content.vb: Public Property DataTypes As Dictionary(Of String, ToscaDataType)
     parameters: []
     return:
-      type: System.Collections.Generic.Dictionary{System.String,Toscana.ToscaDataTypeDefinition}
+      type: System.Collections.Generic.Dictionary{System.String,Toscana.ToscaDataType}
   modifiers.csharp:
   - public
   - get
@@ -1922,16 +1922,16 @@ references:
   - name: )
     nameWithType: )
     fullName: )
-- uid: System.Collections.Generic.Dictionary{System.String,Toscana.ToscaDataTypeDefinition}
-  commentId: T:System.Collections.Generic.Dictionary{System.String,Toscana.ToscaDataTypeDefinition}
+- uid: System.Collections.Generic.Dictionary{System.String,Toscana.ToscaDataType}
+  commentId: T:System.Collections.Generic.Dictionary{System.String,Toscana.ToscaDataType}
   parent: System.Collections.Generic
   definition: System.Collections.Generic.Dictionary`2
-  name: Dictionary<String, ToscaDataTypeDefinition>
-  nameWithType: Dictionary<String, ToscaDataTypeDefinition>
-  fullName: System.Collections.Generic.Dictionary<System.String, Toscana.ToscaDataTypeDefinition>
-  nameWithType.vb: Dictionary(Of String, ToscaDataTypeDefinition)
-  fullname.vb: System.Collections.Generic.Dictionary(Of System.String, Toscana.ToscaDataTypeDefinition)
-  name.vb: Dictionary(Of String, ToscaDataTypeDefinition)
+  name: Dictionary<String, ToscaDataType>
+  nameWithType: Dictionary<String, ToscaDataType>
+  fullName: System.Collections.Generic.Dictionary<System.String, Toscana.ToscaDataType>
+  nameWithType.vb: Dictionary(Of String, ToscaDataType)
+  fullname.vb: System.Collections.Generic.Dictionary(Of System.String, Toscana.ToscaDataType)
+  name.vb: Dictionary(Of String, ToscaDataType)
   spec.csharp:
   - uid: System.Collections.Generic.Dictionary`2
     name: Dictionary
@@ -1949,10 +1949,10 @@ references:
   - name: ', '
     nameWithType: ', '
     fullName: ', '
-  - uid: Toscana.ToscaDataTypeDefinition
-    name: ToscaDataTypeDefinition
-    nameWithType: ToscaDataTypeDefinition
-    fullName: Toscana.ToscaDataTypeDefinition
+  - uid: Toscana.ToscaDataType
+    name: ToscaDataType
+    nameWithType: ToscaDataType
+    fullName: Toscana.ToscaDataType
   - name: '>'
     nameWithType: '>'
     fullName: '>'
@@ -1973,10 +1973,10 @@ references:
   - name: ', '
     nameWithType: ', '
     fullName: ', '
-  - uid: Toscana.ToscaDataTypeDefinition
-    name: ToscaDataTypeDefinition
-    nameWithType: ToscaDataTypeDefinition
-    fullName: Toscana.ToscaDataTypeDefinition
+  - uid: Toscana.ToscaDataType
+    name: ToscaDataType
+    nameWithType: ToscaDataType
+    fullName: Toscana.ToscaDataType
   - name: )
     nameWithType: )
     fullName: )

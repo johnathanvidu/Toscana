@@ -4,29 +4,31 @@ items:
   commentId: N:Toscana
   id: Toscana
   children:
+  - Toscana.IDerivableToscaEntity`1
+  - Toscana.IToscaEntityWithProperties`1
   - Toscana.IToscaMetadata
   - Toscana.ToscaArtifact
   - Toscana.ToscaArtifactType
+  - Toscana.ToscaAttribute
   - Toscana.ToscaAttributeAssignment
-  - Toscana.ToscaAttributeDefinition
   - Toscana.ToscaCapability
   - Toscana.ToscaCapabilityAssignment
   - Toscana.ToscaCapabilityType
   - Toscana.ToscaCloudServiceArchive
   - Toscana.ToscaCredential
-  - Toscana.ToscaDataTypeDefinition
+  - Toscana.ToscaDataType
   - Toscana.ToscaDefaults
   - Toscana.ToscaGroup
   - Toscana.ToscaImport
-  - Toscana.ToscaInterfaceDefinition
+  - Toscana.ToscaInterface
   - Toscana.ToscaMetadata
   - Toscana.ToscaNodeTemplate
   - Toscana.ToscaNodeType
   - Toscana.ToscaObject`1
   - Toscana.ToscaParameter
   - Toscana.ToscaPolicy
+  - Toscana.ToscaProperty
   - Toscana.ToscaPropertyAssignment
-  - Toscana.ToscaPropertyDefinition
   - Toscana.ToscaPropertyEntrySchema
   - Toscana.ToscaPropertyStatus
   - Toscana.ToscaRelationshipTemplate
@@ -47,6 +49,43 @@ items:
   assemblies:
   - Toscana
 references:
+- uid: Toscana.IToscaEntityWithProperties`1
+  commentId: T:Toscana.IToscaEntityWithProperties`1
+  isExternal: false
+  name: IToscaEntityWithProperties<T>
+  nameWithType: IToscaEntityWithProperties<T>
+  fullName: Toscana.IToscaEntityWithProperties<T>
+  nameWithType.vb: IToscaEntityWithProperties(Of T)
+  fullname.vb: Toscana.IToscaEntityWithProperties(Of T)
+  name.vb: IToscaEntityWithProperties(Of T)
+  spec.csharp:
+  - uid: Toscana.IToscaEntityWithProperties`1
+    name: IToscaEntityWithProperties
+    nameWithType: IToscaEntityWithProperties
+    fullName: Toscana.IToscaEntityWithProperties
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: Toscana.IToscaEntityWithProperties`1
+    name: IToscaEntityWithProperties
+    nameWithType: IToscaEntityWithProperties
+    fullName: Toscana.IToscaEntityWithProperties
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
 - uid: Toscana.ToscaArtifact
   commentId: T:Toscana.ToscaArtifact
   isExternal: false
@@ -101,13 +140,13 @@ references:
   name: ToscaCredential
   nameWithType: ToscaCredential
   fullName: Toscana.ToscaCredential
-- uid: Toscana.ToscaDataTypeDefinition
-  commentId: T:Toscana.ToscaDataTypeDefinition
+- uid: Toscana.ToscaDataType
+  commentId: T:Toscana.ToscaDataType
   parent: Toscana
   isExternal: false
-  name: ToscaDataTypeDefinition
-  nameWithType: ToscaDataTypeDefinition
-  fullName: Toscana.ToscaDataTypeDefinition
+  name: ToscaDataType
+  nameWithType: ToscaDataType
+  fullName: Toscana.ToscaDataType
 - uid: Toscana.ToscaDefaults
   commentId: T:Toscana.ToscaDefaults
   isExternal: false
@@ -127,19 +166,19 @@ references:
   name: ToscaImport
   nameWithType: ToscaImport
   fullName: Toscana.ToscaImport
-- uid: Toscana.ToscaAttributeDefinition
-  commentId: T:Toscana.ToscaAttributeDefinition
+- uid: Toscana.ToscaAttribute
+  commentId: T:Toscana.ToscaAttribute
   parent: Toscana
   isExternal: false
-  name: ToscaAttributeDefinition
-  nameWithType: ToscaAttributeDefinition
-  fullName: Toscana.ToscaAttributeDefinition
-- uid: Toscana.ToscaInterfaceDefinition
-  commentId: T:Toscana.ToscaInterfaceDefinition
+  name: ToscaAttribute
+  nameWithType: ToscaAttribute
+  fullName: Toscana.ToscaAttribute
+- uid: Toscana.ToscaInterface
+  commentId: T:Toscana.ToscaInterface
   isExternal: false
-  name: ToscaInterfaceDefinition
-  nameWithType: ToscaInterfaceDefinition
-  fullName: Toscana.ToscaInterfaceDefinition
+  name: ToscaInterface
+  nameWithType: ToscaInterface
+  fullName: Toscana.ToscaInterface
 - uid: Toscana.IToscaMetadata
   commentId: T:Toscana.IToscaMetadata
   parent: Toscana
@@ -173,12 +212,12 @@ references:
   name: ToscaPropertyAssignment
   nameWithType: ToscaPropertyAssignment
   fullName: Toscana.ToscaPropertyAssignment
-- uid: Toscana.ToscaPropertyDefinition
-  commentId: T:Toscana.ToscaPropertyDefinition
+- uid: Toscana.ToscaProperty
+  commentId: T:Toscana.ToscaProperty
   isExternal: false
-  name: ToscaPropertyDefinition
-  nameWithType: ToscaPropertyDefinition
-  fullName: Toscana.ToscaPropertyDefinition
+  name: ToscaProperty
+  nameWithType: ToscaProperty
+  fullName: Toscana.ToscaProperty
 - uid: Toscana.ToscaNodeTemplate
   commentId: T:Toscana.ToscaNodeTemplate
   isExternal: false
@@ -192,6 +231,43 @@ references:
   name: ToscaNodeType
   nameWithType: ToscaNodeType
   fullName: Toscana.ToscaNodeType
+- uid: Toscana.IDerivableToscaEntity`1
+  commentId: T:Toscana.IDerivableToscaEntity`1
+  isExternal: false
+  name: IDerivableToscaEntity<T>
+  nameWithType: IDerivableToscaEntity<T>
+  fullName: Toscana.IDerivableToscaEntity<T>
+  nameWithType.vb: IDerivableToscaEntity(Of T)
+  fullname.vb: Toscana.IDerivableToscaEntity(Of T)
+  name.vb: IDerivableToscaEntity(Of T)
+  spec.csharp:
+  - uid: Toscana.IDerivableToscaEntity`1
+    name: IDerivableToscaEntity
+    nameWithType: IDerivableToscaEntity
+    fullName: Toscana.IDerivableToscaEntity
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: Toscana.IDerivableToscaEntity`1
+    name: IDerivableToscaEntity
+    nameWithType: IDerivableToscaEntity
+    fullName: Toscana.IDerivableToscaEntity
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
 - uid: Toscana.ToscaObject`1
   commentId: T:Toscana.ToscaObject`1
   isExternal: false

@@ -9,14 +9,14 @@ using Toscana.Exceptions;
 namespace Toscana.Tests.Engine
 {
     [TestFixture]
-    public class ToscaServiceTemplateSaverTests
+    public class ToscaFileSystemSaverTests
     {
         [Test]
         public void It_Is_Possible_To_Save_Service_Template_To_File()
         {
             var mockFileSystem = new MockFileSystem();
             var bootstrapper = new Bootstrapper();
-            var serviceTemplateSaver = new ToscaServiceTemplateSaver(mockFileSystem,
+            var serviceTemplateSaver = new ToscaFileSystemSaver<ToscaServiceTemplate>(mockFileSystem,
                 bootstrapper.GetToscaServiceTemplateSerializer());
 
             var serviceTemplate = new ToscaServiceTemplate
@@ -47,9 +47,9 @@ namespace Toscana.Tests.Engine
                 ToscaDefinitionsVersion = "tosca_simple_yaml_1_0"
             };
             var nodeType = new ToscaNodeType();
-            nodeType.Properties.Add("name", new ToscaPropertyDefinition {Type = "string"});
-            nodeType.Properties.Add("age", new ToscaPropertyDefinition {Type = "integer"});
-            nodeType.Properties.Add("gender", new ToscaPropertyDefinition {Type = "boolean"});
+            nodeType.Properties.Add("name", new ToscaProperty {Type = "string"});
+            nodeType.Properties.Add("age", new ToscaProperty {Type = "integer"});
+            nodeType.Properties.Add("gender", new ToscaProperty {Type = "boolean"});
             serviceTemplate.NodeTypes.Add("tosca.nodes.Simple", nodeType);
 
             serviceTemplateSaver.Save(filePath, serviceTemplate);

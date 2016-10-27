@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using Toscana.Engine;
 using Toscana.Exceptions;
-using YamlDotNet.Serialization;
 
 namespace Toscana
 {
@@ -11,19 +11,22 @@ namespace Toscana
     /// A Node Type is a reusable entity that defines the type of one or more Node Templates. 
     /// As such, a Node Type defines the structure of observable properties via a Properties Definition, the Requirements and Capabilities of the node as well as its supported interfaces.
     /// </summary>
-    public class ToscaNodeType : ToscaObject<ToscaNodeType>, IValidatableObject
+    public class ToscaNodeType : ToscaObject<ToscaNodeType>, IToscaEntityWithProperties<ToscaNodeType>, IValidatableObject
     {
+        private readonly ToscaPropertyCombiner toscaPropertyCombiner;
+
         /// <summary>
         /// Initializes a instance of ToscaNodeType
         /// </summary>
         public ToscaNodeType()
         {
-            Properties = new Dictionary<string, ToscaPropertyDefinition>();
-            Attributes = new Dictionary<string, ToscaAttributeDefinition>();
+            Properties = new Dictionary<string, ToscaProperty>();
+            Attributes = new Dictionary<string, ToscaAttribute>();
             Requirements = new List<Dictionary<string, ToscaRequirement>>();
             Capabilities = new Dictionary<string, ToscaCapability>();
             Interfaces = new Dictionary<string, Dictionary<string, object>>();
             Artifacts = new Dictionary<string, ToscaArtifact>();
+            toscaPropertyCombiner = new ToscaPropertyCombiner();
         }
 
         /// <summary>
@@ -39,12 +42,12 @@ namespace Toscana
         /// <summary>
         /// An optional list of property definitions for the Node Type.
         /// </summary>
-        public Dictionary<string, ToscaPropertyDefinition> Properties { get; set; }
+        public Dictionary<string, ToscaProperty> Properties { get; set; }
 
         /// <summary>
         /// An optional list of attribute definitions for the Node Type.
         /// </summary>
-        public Dictionary<string, ToscaAttributeDefinition> Attributes { get; set; }
+        public Dictionary<string, ToscaAttribute> Attributes { get; set; }
 
         /// <summary>
         /// An optional sequenced list of requirement definitions for the Node Type.
@@ -71,33 +74,29 @@ namespace Toscana
         /// For root node type, null is returned
         /// </summary>
         /// <exception cref="ToscaNodeTypeNotFoundException">Thrown when Node Type pointed by Derived From not found</exception>
-        [YamlIgnore]
-        public override ToscaNodeType Base
+        public override ToscaNodeType GetDerivedFromEntity()
         {
-            get
+            if (GetCloudServiceArchive() == null || IsRoot()) return null;
+            ToscaNodeType baseNodeType;
+            if (GetCloudServiceArchive().NodeTypes.TryGetValue(DerivedFrom, out baseNodeType))
             {
-                if (CloudServiceArchive == null || IsRoot()) return null;
-                ToscaNodeType baseNodeType;
-                if (CloudServiceArchive.NodeTypes.TryGetValue(DerivedFrom, out baseNodeType))
-                {
-                    return baseNodeType;
-                }
-                throw new ToscaNodeTypeNotFoundException(string.Format("Node type '{0}' not found", DerivedFrom));
+                return baseNodeType;
             }
+            throw new ToscaNodeTypeNotFoundException(string.Format("Node type '{0}' not found", DerivedFrom));
         }
 
         /// <summary>
         /// Returns requirements of the ToscaNodeType and its ancestors
         /// </summary>
         /// <returns></returns>
-        public Dictionary<string, ToscaRequirement> GetAllRequirements()
+        public List<ToscaRequirement> GetAllRequirements()
         {
-            var requirements = new Dictionary<string, ToscaRequirement>();
-            for (var currNodeType = this; currNodeType != null; currNodeType = currNodeType.Base)
+            var requirements = new List<ToscaRequirement>();
+            for (var currNodeType = this; currNodeType != null; currNodeType = currNodeType.GetDerivedFromEntity())
             {
                 foreach (var requirementKeyValue in currNodeType.Requirements.SelectMany(r => r))
                 {
-                    requirements.Add(requirementKeyValue.Key, requirementKeyValue.Value);
+                    requirements.Add(requirementKeyValue.Value);
                 }
             }
             return requirements;
@@ -110,11 +109,11 @@ namespace Toscana
         {
             var allCapabilityTypes = new Dictionary<string, ToscaCapabilityType>();
 
-            for (var currNodeType = this; currNodeType != null; currNodeType = currNodeType.Base)
+            for (var currNodeType = this; currNodeType != null; currNodeType = currNodeType.GetDerivedFromEntity())
             {
                 foreach (var capability in currNodeType.Capabilities.Values)
                 {
-                    allCapabilityTypes.Add(capability.Type, CloudServiceArchive.CapabilityTypes[capability.Type]);
+                    allCapabilityTypes.Add(capability.Type, GetCloudServiceArchive().CapabilityTypes[capability.Type]);
                 }
             }
             return allCapabilityTypes;
@@ -150,29 +149,36 @@ namespace Toscana
         /// </summary>
         /// <returns></returns>
         /// <exception cref="ToscaNodeTypeNotFoundException">Thrown when Node Type pointed by Derived From not found</exception>
-        public IReadOnlyDictionary<string, ToscaPropertyDefinition> GetAllProperties()
+        public IReadOnlyDictionary<string, ToscaProperty> GetAllProperties()
         {
-            var properties = new Dictionary<string, ToscaPropertyDefinition>();
-            for (var currNodeType = this; currNodeType != null; currNodeType = currNodeType.Base)
-            {
-                foreach (var propertyKeyValue in currNodeType.Properties)
-                {
-                    if (!properties.ContainsKey(propertyKeyValue.Key))
-                    {
-                        properties.Add(propertyKeyValue.Key, propertyKeyValue.Value);
-                    }
-                }
-            }
-            return properties;
+            return Bootstrapper.Current.GetPropertyMerger().CombineAndMerge(this);
         }
 
         IEnumerable<ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
         {
-            if (CloudServiceArchive == null) return Enumerable.Empty<ValidationResult>();
+            if (GetCloudServiceArchive() == null) return Enumerable.Empty<ValidationResult>();
 
-            return Artifacts.Where(toscaArtifact => !CloudServiceArchive.ContainsArtifact(toscaArtifact.Value.File))
+            var validationResults = Artifacts.Where(toscaArtifact => !GetCloudServiceArchive().ContainsArtifact(toscaArtifact.Value.File))
                 .Select(artifact => new ValidationResult(string.Format("Artifact '{0}' not found in Cloud Service Archive.", artifact.Value.File)))
                 .ToList();
+
+            // no need to add circular validation results, as they have been already added in Validate of CloudServiceArchive
+            if (ValidateCircularDependency().Any())
+            {
+                return validationResults;
+            }
+
+            var combineProperties = toscaPropertyCombiner.CombineProperties(this);
+            validationResults.AddRange(
+                combineProperties.Where(
+                    combineProperty => combineProperty.Value.Select(p => p.Type).Distinct().Count() > 1)
+                    .Select(
+                        combineProperty =>
+                            new ValidationResult(
+                                string.Format(
+                                    "Property '{0}' has different type when overriden, which is not allowed",
+                                    combineProperty.Key))));
+            return validationResults;
         }
     }
 }
