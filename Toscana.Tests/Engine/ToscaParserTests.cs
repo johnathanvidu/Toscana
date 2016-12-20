@@ -760,6 +760,29 @@ metadata:
                 tosca.Metadata.TemplateAuthor.Should().Be("Anonymous");
                 tosca.Metadata.TemplateVersion.Should().Be(new Version("1.0"));
             }
+        } 
+        
+        [Test]
+        public void Vido_Test()
+        {
+            const string toscaString = @"tosca_definitions_version: tosca_simple_yaml_1_0
+ 
+metadata:
+  template_name: nutshell
+  template_author: Anonymous
+  template_version: 1.0.1.1.1.1.1.1";
+
+            using (var memoryStream = toscaString.ToMemoryStream())
+            {
+                var tosca = ToscaServiceTemplate.Load(memoryStream);
+
+                // Assert
+                tosca.ToscaDefinitionsVersion.Should().Be("tosca_simple_yaml_1_0");
+                tosca.Metadata.Should().HaveCount(3);
+                tosca.Metadata.TemplateName.Should().Be("nutshell");
+                tosca.Metadata.TemplateAuthor.Should().Be("Anonymous");
+                tosca.Metadata.TemplateVersion.Should().Be(new Version("1.0"));
+            }
         }
 
         [Test]
